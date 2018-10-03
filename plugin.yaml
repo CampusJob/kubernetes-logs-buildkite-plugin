@@ -1,0 +1,17 @@
+name: Kubernetes Logs 
+description: Annotates build with logs from failed Kubernetes pods
+author: https://github.com/CampusJob
+requirements:
+  - kubectl
+  - grep
+  - buildkite-agent
+  - awk
+configuration:
+  properties:
+    namespace:
+      type: string
+    label_query:
+      type: string
+  required:
+    - label_query
+

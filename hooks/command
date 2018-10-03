@@ -1,0 +1,21 @@
+#!/bin/bash
+
+set -euo pipefail
+
+LABEL_QUERY="${BUILDKITE_PLUGIN_KUBERNETES_LOGS_LABEL_QUERY?}"
+NAMESPACE="${BUILDKITE_PLUGIN_KUBERNETES_LOGS_NAMESPACE:-default}"
+
+echo "--- Fetching failed containers matching label query '${LABEL_QUERY}'"
+# Echo to console
+kubectl -n "${NAMESPACE}" get po -l "${LABEL_QUERY}" 
+
+echo "--- Fetching logs for each container..."
+
+while read -r $pod; do
+  cat <<EOF | buildkite-agent annotate --style "warning" --context "kubernetes-logs"
+<details>
+  <summary>Output logs for pod $pod</summary>
+  <code><pre>$(kubectl -n "$NAMESPACE" logs "$pod")</pre></code>
+</details>
+EOF
+done < <(kubectl -n "${NAMESPACE}" get po -l "${LABEL_QUERY}" | grep CrashLoopBackoff | awk '{print $1}')
