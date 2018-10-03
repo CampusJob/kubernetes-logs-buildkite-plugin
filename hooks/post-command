@@ -1,9 +1,9 @@
 #!/bin/bash
 
-set -euo pipefail
+set -eo pipefail
 
-LABEL_QUERY="${BUILDKITE_PLUGIN_KUBERNETES_LOGS_LABEL_QUERY?}"
-NAMESPACE="${BUILDKITE_PLUGIN_KUBERNETES_LOGS_NAMESPACE:-default}"
+LABEL_QUERY="${LABEL_QUERY:-${BUILDKITE_PLUGIN_KUBERNETES_LOGS_LABEL_QUERY}}"
+NAMESPACE="${NAMESPACE:-${BUILDKITE_PLUGIN_KUBERNETES_LOGS_NAMESPACE:-default}}"
 
 echo "--- Fetching failed containers matching label query '${LABEL_QUERY}'"
 # Echo to console

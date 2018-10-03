@@ -12,6 +12,3 @@ configuration:
       type: string
     label_query:
       type: string
-  required:
-    - label_query
-
