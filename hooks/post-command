@@ -2,8 +2,17 @@
 
 set -eo pipefail
 
-LABEL_QUERY="${LABEL_QUERY:-${BUILDKITE_PLUGIN_KUBERNETES_LOGS_LABEL_QUERY}}"
-NAMESPACE="${NAMESPACE:-${BUILDKITE_PLUGIN_KUBERNETES_LOGS_NAMESPACE:-default}}"
+if buildkite-agent meta-data exists "KUBERNETES_LOGS_LABEL_QUERY" ; then
+  LABEL_QUERY="$(buildkite-agent meta-data get "KUBERNETES_LOGS_LABEL_QUERY")"
+else 
+  LABEL_QUERY="${BUILDKITE_PLUGIN_KUBERNETES_LOGS_LABEL_QUERY?LABEL_QUERY must be provided.}"
+fi
+
+if buildkite-agent meta-data exists "KUBERNETES_LOGS_NAMESPACE" ; then
+  NAMESPACE="$(buildkite-agent meta-data get "KUBERNETES_LOGS_NAMESPACE")"
+else
+  NAMESPACE="${BUILDKITE_PLUGIN_KUBERNETES_LOGS_NAMESPACE:-default}"
+fi
 
 echo "--- Fetching failed containers matching label query '${LABEL_QUERY}'"
 # Echo to console
@@ -11,11 +20,11 @@ kubectl -n "${NAMESPACE}" get po -l "${LABEL_QUERY}"
 
 echo "--- Fetching logs for each container..."
 
-while read -r $pod; do
+while read -r pod; do
   cat <<EOF | buildkite-agent annotate --style "warning" --context "kubernetes-logs"
 <details>
   <summary>Output logs for pod $pod</summary>
   <code><pre>$(kubectl -n "$NAMESPACE" logs "$pod")</pre></code>
 </details>
 EOF
-done < <(kubectl -n "${NAMESPACE}" get po -l "${LABEL_QUERY}" | grep CrashLoopBackoff | awk '{print $1}')
+done < <(kubectl -n "${NAMESPACE}" get po -l "${LABEL_QUERY}" | grep CrashLoopBackOff | awk '{print $1}')

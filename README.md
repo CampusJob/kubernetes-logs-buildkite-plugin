@@ -6,10 +6,11 @@ A [Buildkite plugin](https://buildkite.com/docs/pipelines/plugins) that fetches 
 
 ## Configuration
 
-A label query and namespace need to be set for `kubectl` to know which pods to query for. They can be set either with configuration parameters or dynamically in the `command` section, using the environmental variables `NAMESPACE` and `LABEL_QUERY`.
+A label query and namespace need to be set for `kubectl` to know which pods to query for. They can be set either with configuration parameters or dynamically using [Buildkite metadata](https://buildkite.com/docs/agent/v3/cli-meta-data), with the metadata keys `KUBERNETES_LOGS_LABEL_QUERY` and `KUBERNETES_LOGS_NAMESPACE`.
 
 ### `label_query`
-The label query to use with `kubectl`. `kubectl get pods -l "<query>"`
+The label query to use with `kubectl`, as in `kubectl get pods -l "<query>"`.
+A label query **must** be provided.
 
 ### `namespace`
 The Kubernetes namespace to look in. Defaults to `default`.
@@ -30,7 +31,7 @@ Dynamic:
 ```yaml
 steps:
 - command: |
-    export LABEL_QUERY="$(echo 'release=production')"
+    buildkite-agent meta-data set "KUBERNETES_LOGS_LABEL_QUERY" "release=production,component=web"
   plugins:
     kubernetes-logs#v0.0.1: {}
 ```
