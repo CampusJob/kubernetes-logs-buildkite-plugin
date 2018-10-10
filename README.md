@@ -1,7 +1,7 @@
 
 # Kubernetes Logs Buildkite Plugin
 
-A [Buildkite plugin](https://buildkite.com/docs/pipelines/plugins) that fetches pods from the given label query with the status `CrashLoopBackoff` and creates a build annotation with the logs.
+A [Buildkite plugin](https://buildkite.com/docs/pipelines/plugins) that fetches pods from the given label query with the status `CrashLoopBackoff` or `Error` and creates a build annotation with the logs.
 
 
 ## Configuration

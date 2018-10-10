@@ -27,4 +27,4 @@ while read -r pod; do
   <code><pre>$(kubectl -n "$NAMESPACE" logs "$pod")</pre></code>
 </details>
 EOF
-done < <(kubectl -n "${NAMESPACE}" get po -l "${LABEL_QUERY}" | grep CrashLoopBackOff | awk '{print $1}')
+done < <(kubectl -n "${NAMESPACE}" get po -l "${LABEL_QUERY}" | grep -e CrashLoopBackOff -e Error | awk '{print $1}')
