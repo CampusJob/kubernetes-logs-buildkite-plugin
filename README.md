@@ -22,9 +22,9 @@ Configuration:
 ```yaml
 steps:
 - plugins:
-    kubernetes-logs#v0.0.1:
-      label_query: "release=production,component=web"
-      namespace: default
+    - kubernetes-logs#v0.0.1:
+        label_query: "release=production,component=web"
+        namespace: default
 ```
 
 Dynamic:
@@ -33,5 +33,5 @@ steps:
 - command: |
     buildkite-agent meta-data set "KUBERNETES_LOGS_LABEL_QUERY" "release=production,component=web"
   plugins:
-    kubernetes-logs#v0.0.1: {}
+    - kubernetes-logs#v0.0.1: {}
 ```
